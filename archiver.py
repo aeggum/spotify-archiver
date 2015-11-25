@@ -1,8 +1,13 @@
-# __author__ = 'aeggum'
+#!/usr/bin/python
 
 import spotify
 import threading
 import time
+import json
+
+AUTH_FILE = 'credentials.json'
+USERNAME_KEY = 'username'
+PASSWORD_KEY = 'password'
 
 TODAY = time.strftime('%Y-%m-%d')
 ARCHIVE_NAME = 'Archive'
@@ -11,6 +16,9 @@ DISCOVER_WEEKLY_JUSTIN = ('Discover Weekly - Justin - %s', 'spotify:user:spotify
 NEW_MUSIC_FRIDAY = ('New Music Friday - %s', 'spotify:user:spotify:playlist:1yHZ5C3penaxRdWR7LRIOb')
 
 PLAYLISTS = [DISCOVER_WEEKLY, DISCOVER_WEEKLY_JUSTIN, NEW_MUSIC_FRIDAY]
+
+with open(AUTH_FILE, 'r') as authfile:
+    credentials = json.load(authfile)
 
 def login(session, username, password):
     logged_in_event = threading.Event()
@@ -41,7 +49,7 @@ session = spotify.Session()
 loop = spotify.EventLoop(session)
 loop.start()
 
-login(session, 'aeggum', 'foobar')
+login(session, credentials[USERNAME_KEY], credentials[PASSWORD_KEY])
 
 container = session.playlist_container
 if not container.is_loaded:
